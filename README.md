@@ -105,3 +105,108 @@
 ```js
 ~5 = -6 <=> 0000 0101 -> 1111 1010
 ```
+
+## 排序算法
+
+## 查找算法
+
+### 顺序查找
+顺序查找算是最简单的了，无论是有序的还是无序的都可以，也不需要排序，只需要一个个对比即可，但其实效率很低.
+```js
+function search(arr, value){
+    for(let i = 0, l = arr.length - 1; i < l; i++){
+        if(arr[i] === value){
+            return i;
+        }
+    }
+    return -1;
+}
+
+// 使用哨兵，免去每次的越界判断
+function search(arr, value){
+    let l = arr.length - 1;
+    if(arr[l] === value){
+        return l;
+    }
+    let i = 0;
+    while(arr[i++] !== value);
+    return i === l + 1 ? -1 : i-1;
+}
+```
+### 二分查找
+二分法查找适用于大的数据，但前提条件是数据必须是有序的，他的原理是先和中间的比较，如果等于就直接返回，如果小于就在前半部分继续使用二分法进行查找，如果大于则在后半部分继续使用二分法进行查找
+
+```js
+function binarySearch(arr, value){
+    let start = 0,
+        end = arr.length - 1;
+    
+    while(start <= end){
+        // let mid = (start + end) >> 1; //数据可能会溢出
+        let mid = start + ((end - start)>> 1);
+        if(arr[mid] === value){
+            return mid;
+        } else if(arr[mid] > value){
+            end = mid - 1;
+        } else{
+            start = mid + 1;
+        }
+    }
+
+    return -1;
+}
+
+// 递归写法
+function binarySearch(arr, value){
+    let start = 0,
+        end = arr.length - 1;
+    
+    return searchmy(arr, start, end, value);
+}
+
+function searchmy(arr, start, end, value){
+    if(start > end){
+        return -1;
+    }
+    let mid = start + ((end - start)>>1);
+    if(arr[mid] === value){
+        return mid;
+    }else if(arr[mid] > value){
+        return searchmy(arr, start, mid-1, value);
+    }else {
+        return searchmy(arr, mid+1, end, value);
+    }
+}
+```
+### 插值查找
+插值查找与二分查找的区别是，我们比较值得位置不同，二分查找是与中间值进行比较，但是如果我们知道要查找的值大概在数组的最前面或最后面的时候使用二分法查找显然是不明智的，这时候可以选择插值查找。插值查找的时候我们比较的不是中间值，是`mid = start + (value - arr[start])/(arr[end] - arr[start])*(end - start)`。
+```js
+function insertSearch(arr, value){
+    let start = 0,
+        end  = arr.length - 1;
+
+    while(start <= end){
+         if (arr[end] == arr[start]) {
+            if (arr[end] == value){
+                return end;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        let mid = start + Math.floor((value - arr[start])/(arr[end] - arr[start])*(end - start));
+        if(arr[mid] === value){
+            return mid;
+        } else if(arr[mid] > value){
+            end = mid - 1;
+        } else{
+            start = mid + 1;
+        }
+    }
+    return -1;
+}
+```
+
+### 斐波那契查找
+使用场景
